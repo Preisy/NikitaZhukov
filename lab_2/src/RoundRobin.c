@@ -13,7 +13,7 @@ int getNumSize(int num) {
     return size;
 }
 
-void toStringInt(int value, char* buffer) {
+void intToString(int value, char* buffer) {
     int n = value > 0 ? value : -value;
     int size = getNumSize(n);
     if (value < 0) size += 1;
@@ -70,7 +70,7 @@ void appendStateToHistory(char** history, Queue** threads, int threadsAmount, in
                 (int) strlen(strings[i]);
     }
     char str[11];
-    toStringInt(currentTime, str);
+    intToString(currentTime, str);
     char* spaces = createSpace(maxSize - (int) strlen(str) + 2);
     concat(&history[0], str);
     concat(&history[0], spaces);
@@ -100,40 +100,44 @@ int distributeProcesses(int threadsAmount, Item* inp, int n) {
         threads[i] = getQueue();
 
     int threadsIt = 0;
-    for (int currentTime = 0, i = 0; i < n; ++currentTime) {
-        int flag = 0;
-        while (currentTime == inp[i].ta) {
-            flag = 1;
+    for (int currentTime = 0, i = 0; 1; ++currentTime) {
+        int printFlag = 0;
+        while (i < n && currentTime == inp[i].ta) {
+            printFlag = 1;
             Pair p = {inp[i].id, inp[i].ts};
             pushQueue(threads[threadsIt], p);
             threadsIt = (threadsIt + 1) % threadsAmount;
             ++i;
         }
-//        if (flag == 1) {
-//            appendStateToHistory(history, threads, threadsAmount, currentTime);
-//        }
-//        flag = 0;
 
+        int countNulls = 0;
         for (int j = 0; j < threadsAmount; ++j) {
             Pair* el = topQueue(threads[j]);
-            if (el == NULL) continue;
+            if (el == NULL) {
+                ++countNulls;
+                continue;
+            };
             --el->ts;
             if (el->ts == 0) {
-                Pair data = popQueue(threads[j]);
-                if (data.id[0] == 'e') {
-                    int a = 0;
-                }
-                flag = 1;
+                popQueue(threads[j]);
+                printFlag = 1;
             }
         } // сделать выход из цикла здесь как обработаются все процессы
 
-        if (flag == 1) {
+        if (countNulls == threadsAmount && i >= n)
+            break;
+
+        if (printFlag == 1) {
             appendStateToHistory(history, threads, threadsAmount, currentTime);
         }
     }
 
     for (int i = 0; i < threadsAmount + 1; ++i) {
-        printf("%s\n", history[i]);
+        if (i == 0) {
+            printf("   %s\n", history[i]);
+        } else {
+            printf("%d: %s\n", i, history[i]);
+        }
     }
 
     for (int i = 0; i < threadsAmount; ++i) deleteQueue(threads[i]);

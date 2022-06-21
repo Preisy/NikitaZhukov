@@ -1,7 +1,7 @@
 CC=gcc -std=c99
 CFLAGS=-c -Wall -Isrc -Ilib
 LDFLAGS=-Isrc -Ilib
-SOURCES=main.c src/RoundRobin.c lib/QueueVector.c lib/pair.c src/Item.c
+SOURCES=main.c src/RoundRobin.c lib/QueueVector.c lib/pair.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=main
 
