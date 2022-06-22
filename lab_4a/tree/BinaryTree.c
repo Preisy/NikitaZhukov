@@ -227,16 +227,6 @@ void _simplePrint(BNode *node, int space) {
     _simplePrint(node->left, space);
 }
 
-//int printBoundNLR_BT(const BinaryTree *tree, unsigned key, DrawMode mode) {
-//    if (tree == NULL) return 1;
-//    system("echo 16");
-//    BinaryTree *printTree = getBoundBinaryTree(tree, key);
-//    createPngGraph(printTree, mode);
-//    _simplePrint(printTree->root, 0);
-//    destroyBinaryTree(printTree);
-//    return 0;
-//}
-
 int printNLR_BT(const BinaryTree *tree) {
     if (tree == NULL) return 1;
     _simplePrint(tree->root, 0);
