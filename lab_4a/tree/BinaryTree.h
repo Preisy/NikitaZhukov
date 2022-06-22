@@ -13,8 +13,6 @@ BinaryTree *getBinaryTree();
 
 BinaryTree *getBinaryTreeFromFile(const char *fileName);
 
-//BinaryTree *getBoundBinaryTree(const BinaryTree *tree, unsigned key);
-
 /**
  * Добавление нового элемента в дерево без нарушения свойств упорядоченности.
  */
@@ -28,11 +26,8 @@ int addBT(BinaryTree *tree, unsigned key, const char *data);
 int deleteBT(BinaryTree *tree, unsigned key);
 
 /**
- * Вывод содержимого дерева в прямом порядке следования ключей,
- * не превышающих заданный (если ключ не указан — вывод содержимого всего дерева).
+ * Вывод содержимого дерева
  */
-//int printBoundNLR_BT(const BinaryTree *tree, unsigned key, enum DrawMode mode);
-
 int printNLR_BT(const BinaryTree *tree);
 
 int writeNLR_BT(const BinaryTree *tree, enum DrawMode mode);
@@ -52,6 +47,7 @@ int findBT(const BinaryTree *tree, unsigned key, BNode ***result, int *size);
  */
 int findMinBT(const BinaryTree *tree, BNode ***result, int *size);
 
+int traversalBT(const BinaryTree *tree);
 
 void destroyBinaryTree(BinaryTree *tree);
 

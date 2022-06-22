@@ -1,47 +1,77 @@
-#include <stdlib.h>
-#include <time.h>
+#include "BTreeController.h"
 #include "Dialog.h"
 #include "string.h"
+#include "stdlib.h"
 
-char* getString(char* str) {
-    char* res = (char*) malloc(sizeof (char) * (strlen(str) + 1));
-    memcpy(res, str, sizeof(char) * strlen(str));
-    res[strlen(str)] = '\0';
-    return res;
-}
 
 int main() {
-//    BinaryTree *tree = getBinaryTree();
-    BinaryTree *tree = getBinaryTreeFromFile("/mnt/d/C/2sem_aisd/NikitaZukov/lab_4a/input.txt");
+    BinaryTree *tree = getBinaryTree();
 
-//    addBT(tree, 10, getString("a"));
-//    addBT(tree, 5, getString("b"));
-//    addBT(tree, 15, getString("c"));
-//    addBT(tree, 17, getString("d"));
-//    addBT(tree, 12, getString("e"));
-//    addBT(tree, 11, getString("e"));
-//    addBT(tree, 12, getString("f"));
+    Response response = {"", ""};
+    while(strcmp(response.command, "exit") != 0) {
+        ask(&response);
 
-//    deleteBT(tree, 11);
-//    deleteBT(tree, 10);
+        enum ExecutionCode executionCode;
+        if (strcmp(response.command, "exit") == 0) {
+            break;
+        } else if (strcmp(response.command, "help") == 0) {
+            help();
+            executionCode = Ok;
+        } else if (strcmp(response.command, "add") == 0) {
+            C_add(tree, response.args, &executionCode);
+        } else if (strcmp(response.command, "del") == 0) {
+            C_del(tree, response.args, &executionCode);
+        } else if (strcmp(response.command, "tr") == 0) {
+            C_tr(tree, response.args, &executionCode);
+        } else if (strcmp(response.command, "find") == 0) {
+            BNode** res;
+            int size;
+            C_find(tree, response.args, &executionCode, &res, &size);
+            if (executionCode == Ok) {
+                for (int i = 0; i < size; ++i) {
+                    printf("%d.%d :  %s\n", res[i]->key, res[i]->generation, res[i]->data);
+                }
+                free(res);
+            }
 
-    writeNLR_BT(tree, DEFAULT);
+        } else if (strcmp(response.command, "findMin") == 0) {
+            BNode** res;
+            int size;
+            C_findMin(tree, response.args, &executionCode, &res, &size);
+            if (executionCode == Ok) {
+                for (int i = 0; i < size; ++i) {
+                    printf("%d.%d :  %s\n", res[i]->key, res[i]->generation, res[i]->data);
+                }
+                free(res);
+            }
+
+        } else if (strcmp(response.command, "file") == 0) {
+            BinaryTree* tmp = C_file(response.args, &executionCode);
+            if (tmp != NULL) {
+                destroyBinaryTreeDeep(tree);
+                tree = tmp;
+            }
+        } else if (strcmp(response.command, "write") == 0) {
+            C_write(tree, response.args, &executionCode);
+        } else if (strcmp(response.command, "print") == 0) {
+            C_print(tree, response.args, &executionCode);
+        } else {
+            executionCode = CommandError;
+        }
+
+        if (executionCode == CommandError) {
+            printf("Incorrect command <%s>. Try again\n", response.command);
+            continue;
+        } else if (executionCode == ExecutionError) {
+            printf("Execution error <%s>\n", response.command);
+            continue;
+        } else if (executionCode == NotFound) {
+            printf("Not Found\n");
+            continue;
+        }
+    }
+
+
     destroyBinaryTreeDeep(tree);
     return 0;
 }
-
-//int main() {
-//    const char *messages[] = {"0. Quit", "1. Add", "2. Find", "3. Delete", "4. Show", "5. Mock data", "6. Get tree from file"};
-//    const int messageSize = sizeof(messages) / sizeof(messages[0]);
-//    int (*functions[])(BinaryTree *) = {NULL, D_AddBT, D_FindBT, D_DeleteBT, D_ShowBT, D_MockBT};
-//    BinaryTree *tree = getBinaryTree();
-//    int actionIndex;
-//    while ((actionIndex = dialog(messages, messageSize))) {
-//        if (actionIndex == 6) {
-//            if (!D_GetFromFile(&tree)) break;
-//        } else if (!functions[actionIndex](tree)) break;
-//    }
-//    puts("That's all. Bye!\n");
-//    destroyBinaryTreeDeep(tree);
-//    return 0;
-//}

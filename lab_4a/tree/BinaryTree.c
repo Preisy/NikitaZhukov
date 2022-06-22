@@ -1,7 +1,6 @@
 #define  _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdio.h>
 #include <string.h>
 #include "BinaryTree.h"
 #include "GraphGenerator.h"
@@ -267,5 +266,19 @@ int findMinBT(const BinaryTree *tree, BNode ***result, int *size) {
     if (tree == NULL || tree->root == NULL) return 1;
     return _findMinNodeBT(tree->root, result, size);
 }
+
+void _recTraversalBT(const BNode* node) {
+    if (node == NULL) return;
+    printf("%d: %s (%d)\n", node->key, node->data, node->generation);
+    _recTraversalBT(node->left);
+    _recTraversalBT(node->right);
+}
+
+int traversalBT(const BinaryTree *tree) {
+    if (tree == NULL || tree->root == NULL) return 0;
+    _recTraversalBT(tree->root);
+    return 0;
+}
+
 
 
