@@ -88,18 +88,6 @@ char* toStringQueue(Queue* this) {
         strcat(res, " ");
     }
 
-//    int i = this->head;
-//    for (int count = 0; count < this->length; ++count) {
-//        char* str = this->arr[i].id;
-//        if (bufLength < strlen(res) + strlen(this->arr[i].id) + 1) {
-//            bufLength *= 2;
-//            res = (char*) realloc(res, sizeof (char) *(bufLength + 1));
-//        }
-//        strcat(res, str);
-//        strcat(res, " ");
-//        i = (i + 1) % this->bufLength;
-//    }
-
 
     int n = strlen(res);
     char* buf = (char*) calloc(n + 1, sizeof (char));
