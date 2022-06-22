@@ -1,7 +1,7 @@
 #ifndef LAB_2_QUEUE_H
 #define LAB_2_QUEUE_H
 
-#include "pair.h"
+#include "Pair.h"
 #include "stdlib.h"
 
 typedef struct Queue Queue;

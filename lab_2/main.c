@@ -80,6 +80,8 @@ int main() {
             if (strcmp(id, "") == 0) {
                 free(id);
                 printf("Incorrect input. Try again\n");
+                for (int j = 0; j < len; ++j) free(items[j].id);
+                free(items);
                 goto request;
             }
 
@@ -94,6 +96,8 @@ int main() {
             if (ta <= 0) {
                 free(id);
                 printf("Incorrect input. Try again\n");
+                for (int j = 0; j < len; ++j) free(items[j].id);
+                free(items);
                 goto request;
             }
 
@@ -111,6 +115,8 @@ int main() {
             if (ts <= 0) {
                 free(id);
                 printf("Incorrect input. Try again\n");
+                for (int j = 0; j < len; ++j) free(items[j].id);
+                free(items);
                 goto request;
             }
 
@@ -125,20 +131,22 @@ int main() {
                 items = buf;
             }
             Item buf = {id, ta, ts};
+            if (len != 0 && buf.ta < items[len - 1].ta) {
+                free(id);
+                printf("Incorrect input. Try again\n");
+                for (int j = 0; j < len; ++j) free(items[j].id);
+                free(items);
+                goto request;
+            }
+
             items[len] = buf;
             ++len;
         }
 
-        for (int j = 0; j < len; ++j) {
-            printf("{%s, %d, %d} ", items[j].id, items[j].ta, items[j].ts);
-        }
-        printf("\n");
 
         distributeProcesses( 2, items, len);
 
-        for (int j = 0; j < len; ++j) {
-            free(items[j].id);
-        }
+        for (int j = 0; j < len; ++j) free(items[j].id);
         free(items);
     }
 
@@ -146,6 +154,7 @@ int main() {
     return 0;
 }
 
+//2 a/1/20 b/1/15 c/2/10 d/5/8 e/6/5 f/6/9 a/7/20 b/8/15 c/9/10 d/10/8 e/11/5 f/12/9
 
 //Item items[] = {{"a", 1, 5},
 //                    {"b", 1, 3},

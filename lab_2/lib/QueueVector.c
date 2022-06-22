@@ -12,7 +12,7 @@ struct Queue {
 
 Queue* getQueue() {
     Queue* res = (Queue*) malloc(sizeof (Queue));
-    int bufLength = 10;
+    int bufLength = 3;
     res->arr = (Pair*) malloc(sizeof (Pair) * bufLength);
     res->bufLength = bufLength;
     res->head = res->tail = -1;

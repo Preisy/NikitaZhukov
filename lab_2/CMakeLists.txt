@@ -6,4 +6,4 @@ set(CMAKE_C_STANDARD 99)
 include_directories(src)
 include_directories(lib)
 
-add_executable(lab_2 main.c src/RoundRobin.c lib/QueueVector.c lib/pair.c)
+add_executable(lab_2 main.c src/RoundRobin.c lib/QueueVector.c lib/Pair.c)

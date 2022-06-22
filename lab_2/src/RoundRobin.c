@@ -105,7 +105,9 @@ int distributeProcesses(int threadsAmount, Item* inp, int n) {
         while (i < n && currentTime == inp[i].ta) {
             printFlag = 1;
             Pair p = {inp[i].id, inp[i].ts};
-            pushQueue(threads[threadsIt], p);
+            if (pushQueue(threads[threadsIt], p) == 0) {
+                printf("Queue overflow\n");
+            }
             threadsIt = (threadsIt + 1) % threadsAmount;
             ++i;
         }
