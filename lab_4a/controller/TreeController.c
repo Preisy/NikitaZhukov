@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "BTreeController.h"
+#include "TreeController.h"
 
 int validate(char sym) {
     if ('0' <= sym && sym <= '9')
@@ -22,7 +22,7 @@ int convertToInt(char* begin, char* end, int* res) {
 }
 
 
-void C_add(BinaryTree* tree, char* args, enum ExecutionCode* responseCode) {
+void C_add(Tree* tree, char* args, enum ExecutionCode* responseCode) {
     *responseCode = Ok;
 
     int i = 0;
@@ -47,12 +47,12 @@ void C_add(BinaryTree* tree, char* args, enum ExecutionCode* responseCode) {
         data[0] = '\0';
     }
 
-    if (addBT(tree, key, data) == 1) {
+    if (addTree(tree, key, data) == 1) {
         *responseCode = ExecutionError;
     }
 }
 
-void C_del(BinaryTree* tree, char* args, enum ExecutionCode* responseCode) {
+void C_del(Tree* tree, char* args, enum ExecutionCode* responseCode) {
     *responseCode = Ok;
     int n;
     if (convertToInt(args, args + strlen(args), &n)) {
@@ -60,24 +60,24 @@ void C_del(BinaryTree* tree, char* args, enum ExecutionCode* responseCode) {
         return;
     }
 
-    if (deleteBT(tree, n)) {
+    if (deleteTree(tree, n)) {
         *responseCode = ExecutionError;
     }
 }
 
-void C_tr(BinaryTree* tree, char* args, enum ExecutionCode* responseCode) {
+void C_tr(Tree* tree, char* args, enum ExecutionCode* responseCode) {
     *responseCode = Ok;
 
     if (strcmp(args, "") != 0) {
         *responseCode = CommandError;
         return;
     }
-    if (traversalBT(tree)) {
+    if (traversalTree(tree)) {
         *responseCode = ExecutionError;
     }
 }
 
-void C_find(BinaryTree* tree, char* args, enum ExecutionCode* responseCode, BNode ***result, int *size) {
+void C_find(Tree* tree, char* args, enum ExecutionCode* responseCode, Node ***result, int *size) {
     *responseCode = Ok;
     int n;
     if (convertToInt(args, args + strlen(args), &n)) {
@@ -85,40 +85,40 @@ void C_find(BinaryTree* tree, char* args, enum ExecutionCode* responseCode, BNod
         return;
     }
 
-    if (findBT(tree, n, result, size)) {
+    if (findTree(tree, n, result, size)) {
         *responseCode = NotFound;
     }
 }
 
-void C_findMin(BinaryTree* tree, char* args, enum ExecutionCode* responseCode, BNode ***result, int *size) {
+void C_findMin(Tree* tree, char* args, enum ExecutionCode* responseCode, Node ***result, int *size) {
     *responseCode = Ok;
 
     if (strcmp(args, "") != 0) {
         *responseCode = CommandError;
         return;
     }
-    if (findMinBT(tree, result, size)) {
+    if (findMinTree(tree, result, size)) {
         *responseCode = ExecutionError;
     }
 }
 
-BinaryTree* C_file(char* args, enum ExecutionCode* responseCode) {
+Tree* C_file(char* args, enum ExecutionCode* responseCode) {
     *responseCode = Ok;
-    BinaryTree* res = getBinaryTreeFromFile(args);
+    Tree* res = getTreeFromFile(args);
     if (res == NULL)
         *responseCode = ExecutionError;
     return res;
 }
 
-void C_write(BinaryTree* tree, char* args, enum ExecutionCode* responseCode) {
+void C_write(Tree* tree, char* args, enum ExecutionCode* responseCode) {
     *responseCode = Ok;
 
     if (strcmp(args, "-p") == 0) {
-        if (writeNLR_BT(tree, PARENT) == 1) {
+        if (writeTree(tree, Parent) == 1) {
             *responseCode = ExecutionError;
         }
     } else if (strcmp(args, "") == 0) {
-        if (writeNLR_BT(tree, DEFAULT) == 1) {
+        if (writeTree(tree, Default) == 1) {
             *responseCode = ExecutionError;
         }
     } else {
@@ -126,14 +126,14 @@ void C_write(BinaryTree* tree, char* args, enum ExecutionCode* responseCode) {
     }
 }
 
-void C_print(BinaryTree* tree, char* args, enum ExecutionCode* responseCode) {
+void C_print(Tree* tree, char* args, enum ExecutionCode* responseCode) {
     *responseCode = Ok;
 
     if (strcmp(args, "") != 0) {
         *responseCode = CommandError;
         return;
     }
-    if (printNLR_BT(tree)) {
+    if (printTree(tree)) {
         *responseCode = ExecutionError;
     }
 }

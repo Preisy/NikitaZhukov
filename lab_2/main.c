@@ -144,7 +144,7 @@ int main() {
         }
 
 
-        distributeProcesses( 2, items, len);
+        distributeProcesses( threadsAmount, items, len);
 
         for (int j = 0; j < len; ++j) free(items[j].id);
         free(items);
