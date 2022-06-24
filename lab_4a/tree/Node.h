@@ -2,15 +2,15 @@
 #define LAB4A_NODE_H
 
 typedef struct Node {
-    int key;
-    const char *data;
+    char* key;
+    char* data;
     int version;
-    struct Node *parent;
-    struct Node *left;
-    struct Node *right;
+    struct Node* parent;
+    struct Node* left;
+    struct Node* right;
 } Node;
 
 
-Node *getNode(int key, char *data);
+Node* getNode(char* key, char* data);
 
 #endif

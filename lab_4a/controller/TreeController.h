@@ -1,7 +1,7 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
-#include "../tree/Graph.h"
+#include "Tree.h"
 
 enum ExecutionCode {
     Ok,
@@ -10,15 +10,17 @@ enum ExecutionCode {
     NotFound
 };
 
+void C_mock(Tree* tree, char* args, enum ExecutionCode* responseCode);
+
 void C_add(Tree* tree, char* args, enum ExecutionCode* responseCode);
 
 void C_del(Tree* tree, char* args, enum ExecutionCode* responseCode);
 
 void C_tr(Tree* tree, char* args, enum ExecutionCode* responseCode);
 
-void C_find(Tree* tree, char* args, enum ExecutionCode* responseCode, Node ***result, int *size);
+void C_find(Tree* tree, char* args, enum ExecutionCode* responseCode, Node*** result, int* size);
 
-void C_findMin(Tree* tree, char* args, enum ExecutionCode* responseCode, Node ***result, int *size);
+void C_findMin(Tree* tree, char* args, enum ExecutionCode* responseCode, Node*** result, int* size);
 
 Tree* C_file(char* args, enum ExecutionCode* responseCode);
 

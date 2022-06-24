@@ -5,10 +5,11 @@
 
 
 int main() {
-    Tree *tree = getTree();
+    Tree* tree = getTree();
 
     Response response = {"", ""};
-    while(strcmp(response.command, "exit") != 0) {
+    printf("Type your command or type help\n");
+    while (strcmp(response.command, "exit") != 0) {
         ask(&response);
 
         enum ExecutionCode executionCode;
@@ -29,35 +30,36 @@ int main() {
             C_find(tree, response.args, &executionCode, &res, &size);
             if (executionCode == Ok) {
                 for (int i = 0; i < size; ++i) {
-                    printf("%d.%d :  %s\n", res[i]->key, res[i]->version, res[i]->data);
+                    printf("%s %s\n", res[i]->key, res[i]->data);
                 }
                 free(res);
             }
-
         } else if (strcmp(response.command, "findMin") == 0) {
             Node** res;
             int size;
             C_findMin(tree, response.args, &executionCode, &res, &size);
             if (executionCode == Ok) {
                 for (int i = 0; i < size; ++i) {
-                    printf("%d.%d :  %s\n", res[i]->key, res[i]->version, res[i]->data);
+                    printf("%s %s\n", res[i]->key, res[i]->data);
                 }
                 free(res);
             }
-
         } else if (strcmp(response.command, "file") == 0) {
             Tree* tmp = C_file(response.args, &executionCode);
             if (tmp != NULL) {
-                treeDestructorDeep(tree);
+                treeDestructor(tree);
                 tree = tmp;
             }
         } else if (strcmp(response.command, "write") == 0) {
             C_write(tree, response.args, &executionCode);
         } else if (strcmp(response.command, "print") == 0) {
             C_print(tree, response.args, &executionCode);
+        } else if (strcmp(response.command, "mock") == 0) {
+            C_mock(tree, response.args, &executionCode);
         } else {
             executionCode = CommandError;
         }
+
 
         if (executionCode == CommandError) {
             printf("Incorrect command <%s>. Try again\n", response.command);
@@ -72,6 +74,6 @@ int main() {
     }
 
 
-    treeDestructorDeep(tree);
+    treeDestructor(tree);
     return 0;
 }

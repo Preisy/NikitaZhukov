@@ -3,32 +3,33 @@
 
 #include "Node.h"
 
-enum DrawMode;
+typedef enum DrawMode {
+    Default,
+    Parent,
+} DrawMode;
 
 typedef struct Tree {
-    Node *root;
+    Node* root;
 } Tree;
 
-Tree *getTree();
+Tree* getTree();
 
-Tree *getTreeFromFile(char *fileName);
+Tree* getTreeFromFile(char* fileName);
 
-int addTree(Tree *tree, int key, char *data);
+int addTree(Tree* tree, char* key, char* data);
 
-int deleteTree(Tree *tree, int key);
+int deleteTree(Tree* this, char* key);
 
-int printTree(Tree *tree);
+int printTree(Tree* tree);
 
-int writeTree(Tree *tree, enum DrawMode mode);
+int writeTree(Tree* tree, DrawMode mode);
 
-int findTree(Tree *tree, int key, Node ***res, int *len);
+int findTree(Tree* tree, char* key, Node*** res, int* len);
 
-int findMinTree(Tree *tree, Node ***res, int *len);
+int findMinTree(Tree* tree, Node*** res, int* len);
 
-int traversalTree(Tree *tree);
+int traversalTree(Tree* tree);
 
-void treeDestructor(Tree *tree);
-
-void treeDestructorDeep(Tree *tree);
+void treeDestructor(Tree* tree);
 
 #endif

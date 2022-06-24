@@ -1,7 +1,7 @@
 #include "stdlib.h"
 #include "Node.h"
 
-Node *getNode(int key, char *data) {
+Node* getNode(char* key, char* data) {
     Node* node = (Node*) malloc(sizeof(Node));
     node->key = key;
     node->data = data;

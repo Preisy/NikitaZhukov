@@ -22,11 +22,11 @@ void ask(Response* response) {
             break;
     }
 
-    memcpy(response->command, input, sizeof (char) * (i));
+    memcpy(response->command, input, sizeof(char) * (i));
     response->command[i + 1] = '\0';
 
     if (i + 1 < strlen(input)) {
-        memcpy(response->args, input + i + 1, sizeof (char) * (strlen(input) - i));
+        memcpy(response->args, input + i + 1, sizeof(char) * (strlen(input) - i));
         response->args[strlen(input) - i] = '\0';
     }
 
@@ -46,6 +46,7 @@ void help() {
     printf("7. write\n");
     printf("    7.1. write -p  -  will print a pointer to the parent for each node\n");
     printf("8. print\n");
+    printf("9. mock\n");
 
     printf("\nYou can try to enter example command:\n");
     printf("add 15 a\n");

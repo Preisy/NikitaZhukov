@@ -2,25 +2,38 @@
 #include <string.h>
 #include "TreeController.h"
 
-int validate(char sym) {
-    if ('0' <= sym && sym <= '9')
-        return 1;
-    else
-        return 0;
+char* _getString(char* str) {
+    char* res = (char*) malloc(sizeof(char) * (strlen(str) + 1));
+    memcpy(res, str, sizeof(char) * strlen(str));
+    res[strlen(str)] = '\0';
+    return res;
 }
 
-int convertToInt(char* begin, char* end, int* res) {
-    *res = 0;
-    for (; begin != end; ++begin) {
-        if (validate(*begin))
-            *res = *res * 10 + (*begin - '0');
-        else
-            return 1;
+void C_mock(Tree* tree, char* args, enum ExecutionCode* responseCode) {
+    *responseCode = Ok;
+
+    if (strcmp(args, "") != 0) {
+        *responseCode = CommandError;
+        return;
     }
 
-    return 0;
+    if (addTree(tree, _getString("15"), _getString("")))
+        *responseCode = ExecutionError;
+    if (addTree(tree, _getString("20"), _getString("")))
+        *responseCode = ExecutionError;
+    if (addTree(tree, _getString("10"), _getString("")))
+        *responseCode = ExecutionError;
+    if (addTree(tree, _getString("30"), _getString("")))
+        *responseCode = ExecutionError;
+    if (addTree(tree, _getString("40"), _getString("")))
+        *responseCode = ExecutionError;
+    if (addTree(tree, _getString("5"), _getString("")))
+        *responseCode = ExecutionError;
+    if (addTree(tree, _getString("1"), _getString("")))
+        *responseCode = ExecutionError;
+    if (addTree(tree, _getString("7"), _getString("")))
+        *responseCode = ExecutionError;
 }
-
 
 void C_add(Tree* tree, char* args, enum ExecutionCode* responseCode) {
     *responseCode = Ok;
@@ -31,19 +44,19 @@ void C_add(Tree* tree, char* args, enum ExecutionCode* responseCode) {
             break;
     }
 
-    int key = -1;
+    char* key = "";
     char* data = "";
 
-    if (convertToInt(args, args + i, &key)) {
-        *responseCode = CommandError;
-        return;
-    }
+    key = (char*) calloc(i + 1, sizeof (char));
+    memcpy(key, args, sizeof (char) * i);
+    key[i] = '\0';
+
     if (strlen(args) > i + 1) {
-        data = (char*) calloc(strlen(args) - i, sizeof (char));
-        memcpy(data, args + i + 1, sizeof (char) * (strlen(args) - i - 1));
+        data = (char*) calloc(strlen(args) - i, sizeof(char));
+        memcpy(data, args + i + 1, sizeof(char) * (strlen(args) - i - 1));
         data[strlen(args) - i - 1] = '\0';
     } else {
-        data = (char*) calloc(1, sizeof (char));
+        data = (char*) calloc(1, sizeof(char));
         data[0] = '\0';
     }
 
@@ -54,15 +67,26 @@ void C_add(Tree* tree, char* args, enum ExecutionCode* responseCode) {
 
 void C_del(Tree* tree, char* args, enum ExecutionCode* responseCode) {
     *responseCode = Ok;
-    int n;
-    if (convertToInt(args, args + strlen(args), &n)) {
-        *responseCode = CommandError;
-        return;
+
+    int i = 0;
+    for (; i < strlen(args); ++i) {
+        if (args[i] == ' ') {
+            *responseCode = CommandError;
+            return;
+        }
     }
 
-    if (deleteTree(tree, n)) {
-        *responseCode = ExecutionError;
+    char* key = "";
+
+    key = (char*) calloc(i + 1, sizeof (char));
+    memcpy(key, args, sizeof (char) * i);
+    key[i] = '\0';
+
+
+    if (deleteTree(tree, key)) {
+        *responseCode = NotFound;
     }
+    free(key);
 }
 
 void C_tr(Tree* tree, char* args, enum ExecutionCode* responseCode) {
@@ -77,20 +101,30 @@ void C_tr(Tree* tree, char* args, enum ExecutionCode* responseCode) {
     }
 }
 
-void C_find(Tree* tree, char* args, enum ExecutionCode* responseCode, Node ***result, int *size) {
+void C_find(Tree* tree, char* args, enum ExecutionCode* responseCode, Node*** result, int* size) {
     *responseCode = Ok;
-    int n;
-    if (convertToInt(args, args + strlen(args), &n)) {
-        *responseCode = CommandError;
-        return;
+
+    int i = 0;
+    for (; i < strlen(args); ++i) {
+        if (args[i] == ' ') {
+            *responseCode = CommandError;
+            return;
+        }
     }
 
-    if (findTree(tree, n, result, size)) {
+    char* key = "";
+
+    key = (char*) calloc(i + 1, sizeof (char));
+    memcpy(key, args, sizeof (char) * i);
+    key[i] = '\0';
+
+    if (findTree(tree, key, result, size)) {
         *responseCode = NotFound;
     }
+    free(key);
 }
 
-void C_findMin(Tree* tree, char* args, enum ExecutionCode* responseCode, Node ***result, int *size) {
+void C_findMin(Tree* tree, char* args, enum ExecutionCode* responseCode, Node*** result, int* size) {
     *responseCode = Ok;
 
     if (strcmp(args, "") != 0) {
