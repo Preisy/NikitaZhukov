@@ -1,5 +1,3 @@
-#define  _GNU_SOURCE
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,24 +14,22 @@ Tree* getTreeFromFile(char* fileName) {
 
     Tree* tree = getTree();
 
-    char* line = NULL;
     while (!feof(file)) {
         char bufKey[80];
-        size_t len;
+        char bufData[80];
 
         if (fscanf(file, "%s\n", bufKey) <= 0) break;
-        if (getline(&line, &len, file) <= 0) break;
+        if (fscanf(file, "%s\n", bufData) <= 0) break;
 
         char* key = malloc(strlen(bufKey) + 1);
         strcpy(key, bufKey);
 
-        char* data = malloc(len + 1);
-        strcpy(data, line);
+        char* data = malloc(sizeof(bufData) + 1);
+        strcpy(data, bufData);
 
         addTree(tree, key, data);
     }
 
-    free(line);
     fclose(file);
 
     return tree;
