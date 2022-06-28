@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-c -std=c99
-DIRS=-Igraph
-SOURCES=main.c graph/graph.c
+DIRS=-Igraph -Icontroller -Iview
+SOURCES=main.c graph/Graph.c graph/PQueue.c controller/GraphController.c view/Dialog.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=main
 

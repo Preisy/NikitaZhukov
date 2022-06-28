@@ -268,18 +268,6 @@ int findGraph(Graph* this, int x1, int y1, int x2, int y2) {
 
     _recFindGraph(this, start, colors, path, -1, -1, x2, y2);
 
-    printf("   ");
-    for (int i = 0; i < maxY + 1; ++i) {
-        printf("    %d    ", i);
-    }
-    printf("\n");
-    for (int i = 0; i < maxX + 1; ++i) {
-        printf("%d: ", i);
-        for (int j = 0; j < maxY + 1; ++j) {
-            printf("(%d, %d) ", path[i][j][0], path[i][j][1]);
-        }
-        printf("\n");
-    }
 
     int* el = path[x2][y2];
     int flag = 1;
@@ -327,25 +315,6 @@ int findGraph(Graph* this, int x1, int y1, int x2, int y2) {
     }
     printf("(%d, %d)", x2, y2);
     printf("\n");
-
-    for (int i = 0; i < count; ++i) {
-        free(res[i]);
-    }
-    free(res);
-
-    for (int i = 0; i < maxX + 1; ++i)
-        free(colors[i]);
-    free(colors);
-
-    for (int i = 0; i < maxX + 1; ++i) {
-        for (int j = 0; j < maxY + 1; ++j) {
-            free(path[i][j]);
-        }
-        free(path[i]);
-    }
-    free(path);
-
-
 
     return 0;
 }
@@ -403,47 +372,148 @@ int sFindGraph(Graph* this, int x1, int y1, int x2, int y2) {
     }
     if (start == NULL) return 1;
 
+    int flag2 = 1;
     int count = 0;
     for (Node* it = this->nodeHead; it != NULL; it = it->next) {
+        if (it->dot->x == x2 && it->dot->y == y2) {
+            flag2 = 0;
+        }
+        for (Dot* jt = it->dotHead; jt != NULL; jt = jt->next) {
+            if (jt->x == x2 && jt->y == y2) {
+                flag2 = 0;
+            }
+            ++count;
+        }
         ++count;
     }
 
-//    Dot** colors = (Dot**) calloc(count, sizeof (Dot*));
-//    int colorsIt = 0;
-//    colors[colorsIt++] = start->dot;
+    if (flag2) return 1;
 
-//    DictDotDot colors = getDictDotDot(count);
-//    int colorsIt = 0;
-//    for (Node* it = this->nodeHead; it != NULL; it = it->next) {
-//        colors.arr[colorsIt][0] = it->dot;
-//        ++colorsIt;
-//    }
+    Dot** buf = (Dot**) calloc(count, sizeof (Dot*));
+    int bufIt = 0;
+    for (Node* it = this->nodeHead; it != NULL; it = it->next) {
+        int flag = 0;
+        for (int i = 0; i < bufIt; ++i) {
+            if (buf[i]->x == it->dot->x &&
+                buf[i]->y == it->dot->y) {
+                flag = 1;
+                break;
+            }
+        }
+        if (!flag) {
+            buf[bufIt] = it->dot;
+            ++bufIt;
+        }
+        for (Dot* jt = it->dotHead; jt != NULL; jt = jt->next) {
+            flag = 0;
+            for (int i = 0; i < bufIt; ++i) {
+                if (buf[i]->x == jt->x &&
+                    buf[i]->y == jt->y) {
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag) continue;
+
+            buf[bufIt] = jt;
+            ++bufIt;
+        }
+    }
+    count = bufIt;
+
+    free(buf);
+
 
 
     DictDotDot path = getDictDotDot(count);
     int pathIt = 0;
+
     for (Node* it = this->nodeHead; it != NULL; it = it->next) {
-        path.arr[pathIt][0] = it->dot;
-        ++pathIt;
+        int flag = 0;
+        for (int i = 0; i < pathIt; ++i) {
+            if (path.arr[i][0]->x == it->dot->x &&
+                path.arr[i][0]->y == it->dot->y) {
+                flag = 1;
+                break;
+            }
+        }
+        if (!flag) {
+            path.arr[pathIt][0] = it->dot;
+            ++pathIt;
+        }
+        for (Dot* jt = it->dotHead; jt != NULL; jt = jt->next) {
+            flag = 0;
+            for (int i = 0; i < pathIt; ++i) {
+                if (path.arr[i][0]->x == jt->x &&
+                    path.arr[i][0]->y == jt->y) {
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag) continue;
+
+            path.arr[pathIt][0] = jt;
+            ++pathIt;
+        }
     }
+
+    for (int i = 0; i < count; ++i) {
+        path.arr[i][1] = NULL;
+    }
+
+
 
     DictDotDouble dist = getDictDotDouble(count);
     int distIt = 0;
+
     for (Node* it = this->nodeHead; it != NULL; it = it->next) {
-        path.arr[distIt][0] = it->dot;
-        ++distIt;
+        int flag = 0;
+        for (int i = 0; i < distIt; ++i) {
+            if (dist.dotArr[i]->x == it->dot->x &&
+                dist.dotArr[i]->y == it->dot->y) {
+                flag = 1;
+                break;
+            }
+        }
+        if (!flag) {
+            dist.dotArr[distIt] = it->dot;
+            ++distIt;
+        }
+        for (Dot* jt = it->dotHead; jt != NULL; jt = jt->next) {
+            flag = 0;
+            for (int i = 0; i < distIt; ++i) {
+                if (dist.dotArr[i]->x == jt->x &&
+                    dist.dotArr[i]->y == jt->y) {
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag) continue;
+
+            dist.dotArr[distIt] = jt;
+            ++distIt;
+        }
+    }
+
+    for (int i = 0; i < count; ++i) {
+        dist.doubleArr[i] = DBL_MAX;
+    }
+
+
+
+    for (int i = 0; i < dist.len; ++i) {
+        if (dist.dotArr[i]->x == start->dot->x &&
+            dist.dotArr[i]->y == start->dot->y) {
+            dist.doubleArr[i] = 0;
+            break;
+        }
     }
 
     addPQueue(&pQueue, start->dot, 0);
+
     while(!isEmpty(&pQueue)) {
         Dot* top = popPQueue(&pQueue);
 
-//        for (int i = 0; i < colors.len; ++i) {
-//            if (colors.arr[i][0] == top) {
-//                colors.arr[i][1] = colors.arr[i][0];
-//                break;
-//            }
-//        }
 
         Node* node = NULL;
         for (Node* it = this->nodeHead; it != NULL; it = it->next) {
@@ -452,37 +522,122 @@ int sFindGraph(Graph* this, int x1, int y1, int x2, int y2) {
                 break;
             }
         }
+        if (node == NULL) {
+            continue;
+        }
+        double dNode = -1;
+        for (int i = 0; i < dist.len; ++i) {
+            if (dist.dotArr[i]->x == node->dot->x &&
+                dist.dotArr[i]->y == node->dot->y) {
+                dNode = dist.doubleArr[i];
+                break;
+            }
+        }
 
         for (Dot* it = node->dotHead; it != NULL; it = it->next) {
-//            int colorFlag = 0;
-//            for (int i = 0; i < colors.len; ++i) {
-//                if (colors.dotArr[i][0] == it) {
-//                    if (colors.dotArr[i][0] == NULL) {
-//                        colorFlag = 0;
-//                    } else {
-//                        colorFlag = 1;
-//                    }
-//                    break;
-//                }
-//            }
-//            if (colorFlag) continue;
-            double d = -1;
+
+
+            double dDot = -1;
             for (int i = 0; i < dist.len; ++i) {
-                if (dist.dotArr[i] == it) {
-                    d = dist.doubleArr[i];
+                if (dist.dotArr[i]->x == it->x &&
+                    dist.dotArr[i]->y == it->y) {
+                    dDot = dist.doubleArr[i];
                     break;
                 }
             }
-            if ()
+            if (dDot > dNode + it->r) {
+                for (int i = 0; i < dist.len; ++i) {
+                    if (dist.dotArr[i]->x == it->x &&
+                        dist.dotArr[i]->y == it->y) {
+                        dist.doubleArr[i] = dNode + it->r;
+                        break;
+                    }
+                }
 
+                for (int i = 0; i < path.len; ++i) {
+                    if (path.arr[i][0]->x == it->x &&
+                        path.arr[i][0]->y == it->y) {
+                        path.arr[i][1] = node->dot;
+                        break;
+                    }
+                }
+                if (it->x != x2 || it->y != y2) {
+                    addPQueue(&pQueue, it, dNode + it->r);
+                }
+            }
         }
+    }
 
-
+    Dot* it = NULL;
+    for (int i = 0; i < path.len; ++i) {
+        if (path.arr[i][0]->x == x2 &&
+            path.arr[i][0]->y == y2) {
+            it = path.arr[i][0];
+            break;
+        }
     }
 
 
+    int bufCount = 0;
+    while (it != NULL) {
+        if (it->x == x1 && it->y == y1) {
+            break;
+        }
+        for (int i = 0; i < path.len; ++i) {
+            if (path.arr[i][0]->x == it->x &&
+                path.arr[i][0]->y == it->y) {
+                ++bufCount;
+                it = path.arr[i][1];
+                break;
+            }
+        }
+    }
+
+    if (it == NULL || !(it->x == x1 && it->y == y1)) return 1;
 
 
+    Dot** res = calloc(bufCount, sizeof (Dot*));
+    int resIt = 0;
+    int bufbufCount = bufCount;
+    bufCount -= 1;
+
+
+    it = NULL;
+    for (int i = 0; i < path.len; ++i) {
+        if (path.arr[i][0]->x == x2 &&
+            path.arr[i][0]->y == y2) {
+            it = path.arr[i][0];
+            break;
+        }
+    }
+    res[bufCount] = it;
+    while (it != NULL) {
+        if (it->x == x1 && it->y == y1) {
+            break;
+        }
+        for (int i = 0; i < path.len; ++i) {
+            if (path.arr[i][0]->x == it->x &&
+                path.arr[i][0]->y == it->y) {
+                it = path.arr[i][1];
+                res[bufCount] = it;
+                bufCount -= 1;
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < bufbufCount; ++i) {
+        printf("(%d, %d), ", res[i]->x, res[i]->y);
+    }
+    printf("(%d, %d)", x2, y2);
+    printf("\n");
+
+
+
+
+
+
+    free(res);
 
 
 
