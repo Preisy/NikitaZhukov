@@ -1,0 +1,6 @@
+.gitignore
+cmake-build-debug
+.idea
+*.o
+main
+test.c
