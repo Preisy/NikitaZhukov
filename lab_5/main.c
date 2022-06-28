@@ -32,8 +32,6 @@ int main() {
             C_find(&graph, response.args, &executionCode);
         } else if (strcmp(response.command, "sfind") == 0) {
             C_sfind(&graph, response.args, &executionCode);
-        } else if (strcmp(response.command, "write") == 0) {
-            C_write(&graph, response.args, &executionCode);
         } else if (strcmp(response.command, "print") == 0) {
             C_print(&graph, response.args, &executionCode);
         } else {
