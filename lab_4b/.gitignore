@@ -1,0 +1,8 @@
+.gitignore
+.idea
+cmake-build-debug
+lab_4a
+lab_4b_cpp
+tree.dot.png
+*.o
+main
